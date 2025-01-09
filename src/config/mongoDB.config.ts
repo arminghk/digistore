@@ -8,6 +8,7 @@ export class MongooseConfigService implements MongooseOptionsFactory {
 
     createMongooseOptions(): MongooseModuleOptions {
         const uri = this.configService.get<string>('Db.MONGODB_URI');
+
         return {
             uri,
             connectionFactory: (connection) => {

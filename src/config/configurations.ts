@@ -23,7 +23,7 @@ const JwtConfig = registerAs(ConfigKeys.Jwt, () => ({
   }));
 
 const DbConfig = registerAs(ConfigKeys.Db , ()=>({
-    MONGODB_URI:'mongodb://localhost/digistore'
+    MONGODB_URI:'mongodb://127.0.0.1:27017/digistore'
 }))
 
 

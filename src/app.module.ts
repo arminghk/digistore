@@ -4,6 +4,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { MongooseConfigService } from './config/mongoDB.config';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { CategoryModule } from './modules/category/category.module';
+
 
 @Module({
   imports: [
@@ -12,7 +14,8 @@ import { AuthModule } from './modules/auth/auth.module';
     }),
     CustomConfigModule,
     UserModule,
-    AuthModule
+    AuthModule,
+    CategoryModule
   ],
   controllers: [],
   providers: [],
