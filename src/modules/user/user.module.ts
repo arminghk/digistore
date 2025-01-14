@@ -7,11 +7,13 @@ import { AuthService } from '../auth/auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { RedisModule } from '../redis/redis.module';
 import { Profile, ProfileSchema } from './model/profile.schema';
+import { TokenService } from '../auth/tokens.service';
+
 
 @Module({
   imports: [MongooseModule.forFeature([{ name: User.name, schema: UserSchema },{ name: Profile.name, schema: ProfileSchema }]), RedisModule],
   controllers: [UserController],
-  providers: [UserService,AuthService,JwtService],
+  providers: [UserService,AuthService,JwtService,TokenService],
   exports: [MongooseModule],
 
 })

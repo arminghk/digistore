@@ -11,6 +11,9 @@ export class User {
   mobile: string;
 
   @Prop()
+  username: string;
+
+  @Prop()
   firstname: string;
   
   @Prop()

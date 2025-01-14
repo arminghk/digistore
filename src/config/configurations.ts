@@ -14,7 +14,8 @@ const AppConfig = registerAs(ConfigKeys.App , ()=>({
         methods: 'GET,POST,PUT',     
         allowedHeaders: 'Content-Type, Authorization', 
         credentials: true,           
-      }
+      },
+    cookieSecret:'asdadlw3llr@#'
     
 }))
 const JwtConfig = registerAs(ConfigKeys.Jwt, () => ({

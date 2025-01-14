@@ -8,12 +8,13 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { randomInt } from 'crypto';
 import { User } from '../user/model/user.schema';
-import {JwtService} from "@nestjs/jwt";
-import {TokensPayload} from "./types/payload";
+import { JwtService } from "@nestjs/jwt";
+// import {TokensPayload} from "./types/payload";
 import { LoginDto, SendOtpDto, SignupDto, VerifyOtpDto } from './dto/otp.dto';
-import {ConfigService} from "@nestjs/config";
+import { ConfigService } from "@nestjs/config";
 import { RedisService } from '../redis/redis.service';
-import {hashSync, genSaltSync, compareSync} from "bcrypt";
+import { hashSync, genSaltSync, compareSync } from "bcrypt";
+import { AccessTokenPayload, CookiePayload } from './types/payload';
 @Injectable()
 export class AuthService {
   constructor(
@@ -21,7 +22,7 @@ export class AuthService {
     private readonly redisService: RedisService,
     private jwtService: JwtService,
     private configService: ConfigService
-  ) {}
+  ) { }
 
   async sendOtp(sendOtpDto: SendOtpDto) {
     const { mobile } = sendOtpDto;
@@ -29,7 +30,7 @@ export class AuthService {
     if (user) {
       throw new BadRequestException('you are registerd before');
     }
-    const code = await this.generateOrUpdateOTP(mobile);
+    const code = await this.generateOTP(mobile);
     return {
       message: 'sent code successfully',
       code,
@@ -37,7 +38,7 @@ export class AuthService {
   }
   async verifyOtp(verifyOtpDto: VerifyOtpDto) {
     let { mobile, code } = verifyOtpDto;
-  
+
     const storedCode = await this.redisService.get(mobile);
 
     if (!storedCode) {
@@ -49,29 +50,32 @@ export class AuthService {
     let user = await this.userModel.create({ mobile, isVerify: true });
 
 
-    const {accessToken, refreshToken} = this.makeTokensForUser({
-      id: user._id,
-      mobile,
+    const { accessToken, refreshToken } = this.makeTokensForUser({
+      id: user._id.toString(),
+      mobile: user.mobile,
     });
     return {
       accessToken,
       refreshToken,
       message: "You logged-in successfully",
     };
-  
+
   }
-  async generateOrUpdateOTP(mobile: string) {
+  async generateOTP(identifier: string) {
     const expiresInSeconds = 120;
     const code = randomInt(10000, 99999).toString();
-    const existingOtp = await this.redisService.get(mobile);
-    if (existingOtp) { 
-        throw new BadRequestException('otp not expired');
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const key = emailRegex.test(identifier) ? `email:${identifier}` : `mobile:${identifier}`;
+    const existingOtp = await this.redisService.get(key);
+    if (existingOtp) {
+      throw new BadRequestException('OTP not expired');
     }
-    await this.redisService.set(mobile, code, expiresInSeconds);
+
+    await this.redisService.set(key, code, expiresInSeconds);
     return code;
   }
   async signup(signupDto: SignupDto) {
-    const {firstname, lastname, email, password, mobile} = signupDto;
+    const { firstname, lastname, email, password, mobile } = signupDto;
     await this.checkEmail(email);
     await this.checkMobile(mobile);
     let hashedPassword = this.hashPassword(password);
@@ -89,8 +93,8 @@ export class AuthService {
     };
   }
   async login(loginDto: LoginDto) {
-    const {email, password} = loginDto;
-    const user = await this.userModel.findOne({email});
+    const { email, password } = loginDto;
+    const user = await this.userModel.findOne({ email });
     if (!user)
       throw new UnauthorizedException("username or password is incorrect");
     if (!compareSync(password, user.password)) {
@@ -98,7 +102,7 @@ export class AuthService {
     }
     user.isVerify = true;
     await user.save();
-    const {accessToken, refreshToken} = this.makeTokensForUser({
+    const { accessToken, refreshToken } = this.makeTokensForUser({
       mobile: user.mobile,
       id: user.id,
     });
@@ -109,11 +113,11 @@ export class AuthService {
     };
   }
   async checkEmail(email: string) {
-    const user = await this.userModel.findOne({email});
+    const user = await this.userModel.findOne({ email });
     if (user) throw new ConflictException("email is already exist");
   }
   async checkMobile(mobile: string) {
-    const user = await this.userModel.findOne({mobile});
+    const user = await this.userModel.findOne({ mobile });
     if (user) throw new ConflictException("mobile number is already exist");
   }
   hashPassword(password: string) {
@@ -121,7 +125,7 @@ export class AuthService {
     return hashSync(password, salt);
   }
 
-  makeTokensForUser(payload: TokensPayload) {
+  makeTokensForUser(payload: CookiePayload) {
     const accessToken = this.jwtService.sign(payload, {
       secret: this.configService.get("Jwt.accessTokenSecret"),
       expiresIn: "30d",
@@ -137,12 +141,12 @@ export class AuthService {
   }
   async validateAccessToken(token: string) {
     try {
-      const payload = this.jwtService.verify<TokensPayload>(token, {
+      const payload = this.jwtService.verify<AccessTokenPayload>(token, {
         secret: this.configService.get("Jwt.accessTokenSecret"),
       });
-    
+
       if (typeof payload === "object" && payload?.id) {
-        const user = await this.userModel.findOne({_id: payload.id});
+        const user = await this.userModel.findOne({ _id: payload.id });
         if (!user) {
           throw new UnauthorizedException("login on your account ");
         }

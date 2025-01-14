@@ -45,17 +45,21 @@ export class CategoryService {
 
 
   async findAll(paginationDto: PaginationDto) {
-    // const { limit, page, skip } = paginationSolver(paginationDto);
-    // const [categories, count] = await this.categoryModel
-    //   .find()
-    //   .skip(skip)
-    //   .limit(limit)
-    //   .exec(); 
+    const { limit, page, skip } = paginationSolver(paginationDto);
+    const categories = await this.categoryModel
+      .find()            
+      .skip(skip)        
+      .limit(limit)     
+      .exec();
+  
+    const count = await this.categoryModel.countDocuments();
+  
     return {
-      // pagination: paginationGenerator(count, page, limit),
-      // categories
+      pagination: paginationGenerator(count, page, limit), 
+      categories
     };
   }
+  
 
 
   async findOne(id: string) {
