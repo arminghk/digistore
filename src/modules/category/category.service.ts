@@ -1,7 +1,7 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
-import { Category } from './model/category.schema'; // به جای CategorySchema باید مدل Category را وارد کنید
+// import { UpdateCategoryDto } from './dto/update-category.dto';
+import { Category } from './model/category.schema'; 
 import { ConflictMessage, NotFoundMessage, PublicMessage } from 'src/common/enums/message.enum';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
 import { paginationGenerator, paginationSolver } from 'src/common/utils/pagination.util';
@@ -75,7 +75,7 @@ export class CategoryService {
   }
 
  
-  async update(id: string, updateCategoryDto: UpdateCategoryDto) {
+  async update(id: string, updateCategoryDto) {
     const category = await this.findOne(id); 
     const { priority, title } = updateCategoryDto;
     if (title) category.title = title;
