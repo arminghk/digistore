@@ -8,8 +8,6 @@ import { AuthGuard } from '../auth/guards/AuthGuard';
 import { ProfileImages } from './types/files';
 import { UploadedOptionalFiles } from 'src/common/decorators/upload-file.decorator';
 import { Response } from 'express';
-import { CookieKeys } from 'src/common/enums/cookie.enum';
-import { CookiesOptionsToken } from 'src/common/utils/cookie.util';
 import { PublicMessage } from 'src/common/enums/message.enum';
 // import { CheckOtpDto, UserBlockDto } from '../auth/dto/auth.dto';
 import { AuthDecorator } from 'src/common/decorators/auth.decorator';
@@ -45,7 +43,6 @@ export class UserController {
   async changeEmail(@Body() emailDto: ChangeEmailDto, @Res() res: Response) {
     // const {code, token, message} = await this.userService.changeEmail(emailDto.email)
     // if(message) return res.json({message});
-    // res.cookie(CookieKeys.EmailOTP, token, CookiesOptionsToken());
     // res.json({
     //   code,
     //   message: PublicMessage.SentOtp

@@ -9,12 +9,11 @@ import { Model } from 'mongoose';
 import { randomInt } from 'crypto';
 import { User } from '../user/model/user.schema';
 import { JwtService } from "@nestjs/jwt";
-// import {TokensPayload} from "./types/payload";
 import { LoginDto, SendOtpDto, SignupDto, VerifyOtpDto } from './dto/otp.dto';
 import { ConfigService } from "@nestjs/config";
 import { RedisService } from '../redis/redis.service';
 import { hashSync, genSaltSync, compareSync } from "bcrypt";
-import { AccessTokenPayload, CookiePayload } from './types/payload';
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -125,7 +124,7 @@ export class AuthService {
     return hashSync(password, salt);
   }
 
-  makeTokensForUser(payload: CookiePayload) {
+  makeTokensForUser(payload) {
     const accessToken = this.jwtService.sign(payload, {
       secret: this.configService.get("Jwt.accessTokenSecret"),
       expiresIn: "30d",
@@ -141,7 +140,7 @@ export class AuthService {
   }
   async validateAccessToken(token: string) {
     try {
-      const payload = this.jwtService.verify<AccessTokenPayload>(token, {
+      const payload = this.jwtService.verify(token, {
         secret: this.configService.get("Jwt.accessTokenSecret"),
       });
 
