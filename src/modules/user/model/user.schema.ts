@@ -22,14 +22,6 @@ export class User {
   @Prop()
   email: string;
 
-  @Prop()
-  new_email: string;
-
-  @Prop()
-  verify_email: boolean;
-
-  @Prop()
-  verify_phone: boolean;
   
   @Prop()
   password: string;

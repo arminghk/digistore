@@ -2,9 +2,7 @@ import { Body, Controller, Get, Param, ParseFilePipe, ParseIntPipe, Patch, Post,
 import { UserService } from './user.service';
 import { ChangeEmailDto, ChangePhoneDto, ChangeUsernameDto, ProfileDto } from './dto/profile.dto';
 import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { multerDestination, multerFilename, multerStorage } from 'src/common/utils/multer.util';
-import { AuthGuard } from '../auth/guards/AuthGuard';
+import {multerStorage } from 'src/common/utils/multer.util';
 import { ProfileImages } from './types/files';
 import { UploadedOptionalFiles } from 'src/common/decorators/upload-file.decorator';
 import { Response } from 'express';
@@ -38,14 +36,5 @@ export class UserController {
     return this.userService.changeProfile(files, profileDto)
   }
 
-
-  @Patch("/change-email")
-  async changeEmail(@Body() emailDto: ChangeEmailDto, @Res() res: Response) {
-    // const {code, token, message} = await this.userService.changeEmail(emailDto.email)
-    // if(message) return res.json({message});
-    // res.json({
-    //   code,
-    //   message: PublicMessage.SentOtp
-    // })
-  }
+  
 }

@@ -1,4 +1,4 @@
-import { ConflictException, Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Inject, Injectable } from '@nestjs/common';
 import { ProfileDto } from './dto/profile.dto';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
@@ -6,11 +6,12 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Profile } from './model/profile.schema';
 import { Model } from 'mongoose';
 import { User } from './model/user.schema';
-import { ConflictMessage, PublicMessage } from 'src/common/enums/message.enum';
+import { AuthMessage, ConflictMessage, PublicMessage } from 'src/common/enums/message.enum';
 import { isDate } from 'class-validator';
 import { Gender } from './enum/gender.enum';
 import { ProfileImages } from './types/files';
 import { AuthService } from '../auth/auth.service';
+import { RedisService } from '../redis/redis.service';
 
 @Injectable()
 export class UserService {
@@ -19,6 +20,7 @@ export class UserService {
         @InjectModel(User.name) private userModel: Model<User>,
         @Inject(REQUEST) private request: Request,
         private authService: AuthService,
+        private readonly redisService: RedisService,
        
     ) { }
     async changeProfile(files: ProfileImages, profileDto: ProfileDto) {
@@ -68,24 +70,6 @@ export class UserService {
     }
 
 
-    async changeEmail(email: string) {
-        // const {id} = this.request.user;
-        // const user = await this.userModel.findOne({email});
-        // if(user && user?.id !== id) {
-        //     throw new ConflictException(ConflictMessage.Email);
-        // }else if(user && user.id == id) {
-        //     return {
-        //         message: PublicMessage.Updated
-        //     }
-        // }
-
-        // await this.userModel.updateOne({id}, {new_email: email})
-        // const otp = await this.authService.generateOTP(id);
-        // const token = this.tokenService.createEmailToken({email});
-        // return {
-        //     code: otp,
-        //     token
-        // }
-    }
-    
+ 
+   
 }
