@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, ParseFilePipe, ParseIntPipe, Patch, Post, Put, Query, Res, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { UserService } from './user.service';
-import { ChangeEmailDto, ChangePhoneDto, ChangeUsernameDto, ProfileDto } from './dto/profile.dto';
+import { ChangeEmailDto, ChangeMobileDto, ChangeUsernameDto, ProfileDto } from './dto/profile.dto';
 import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import {multerStorage } from 'src/common/utils/multer.util';
 import { ProfileImages } from './types/files';
@@ -36,5 +36,32 @@ export class UserController {
     return this.userService.changeProfile(files, profileDto)
   }
 
-  
+  @Patch("/change-email")
+  async changeEmail(@Body() emailDto: ChangeEmailDto, @Res() res: Response) {
+    const {code,message} = await this.userService.changeEmail(emailDto.email)
+    res.json({
+      code,
+      message
+
+    })
+  }
+  @Post("/verify-email")
+  async verifyEmail(@Body() code) {
+    return this.userService.verifyEmail(code)
+  }
+
+
+  @Patch("/change-mobile")
+  async changeMobile(@Body() mobileDto: ChangeMobileDto, @Res() res: Response) {
+    const {code,message} = await this.userService.changeEmail(mobileDto.mobile)
+    res.json({
+      code,
+      message
+
+    })
+  }
+  @Post("/verify-email")
+  async verifyMobile(@Body() code) {
+    return this.userService.verifyMobile(code)
+  }
 }

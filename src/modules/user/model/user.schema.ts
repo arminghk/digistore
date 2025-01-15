@@ -22,6 +22,16 @@ export class User {
   @Prop()
   email: string;
 
+  @Prop()
+  new_email: string;
+  @Prop()
+  new_mobile: string;
+
+  @Prop()
+  verify_email: boolean;
+
+  @Prop()
+  verify_Mobile: boolean;
   
   @Prop()
   password: string;

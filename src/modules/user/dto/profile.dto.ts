@@ -31,9 +31,9 @@ export class ChangeEmailDto {
     @IsEmail({}, {message: ValidationMessage.InvalidEmailFormat})
     email: string
 }
-export class ChangePhoneDto {
+export class ChangeMobileDto {
     @IsMobilePhone("fa-IR", {}, {message: ValidationMessage.InvalidPhoneFormat})
-    phone: string
+    mobile: string
 }
 export class ChangeUsernameDto {
     @IsString()

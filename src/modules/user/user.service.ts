@@ -4,7 +4,7 @@ import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
 import { InjectModel } from '@nestjs/mongoose';
 import { Profile } from './model/profile.schema';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { User } from './model/user.schema';
 import { AuthMessage, ConflictMessage, PublicMessage } from 'src/common/enums/message.enum';
 import { isDate } from 'class-validator';
@@ -70,6 +70,75 @@ export class UserService {
     }
 
 
- 
+    async changeEmail(newEmail: string) {
+        const {id} = this.request.user;
+        const user = await this.userModel.findById(id);
+   
+        if(user && user.email == newEmail) {
+            return {
+                message: PublicMessage.Updated
+            }
+        }
+        const result = await this.userModel.updateOne(
+            { _id: new Types.ObjectId(id) }, 
+            { new_email: newEmail }
+          );
+
+        const otp = await this.authService.generateOTP(newEmail);
+        await this.redisService.set(`email_token:${id}`, otp, 300);
+        return {
+            code: otp,
+        }
+    }
+    async verifyEmail(code: string) {
+        const {id, new_email} = this.request.user;
+        const otpCode = await this.redisService.get(`email_token:${id}`);
+        if(!otpCode) throw new BadRequestException(AuthMessage.ExpiredCode);
+
+        const result = await this.userModel.updateOne({_id:  new Types.ObjectId(id)}, {
+            email:new_email,
+            verify_email: true,
+            new_email: null
+        });
+        console.log(result);
+        return {
+            message: PublicMessage.Updated,
+        }
+    }
+
+    async changeMobile(newMobile: string) {
+        const {id} = this.request.user;
+        const user = await this.userModel.findById({id});
+        if(user && user.mobile == newMobile) {
+            return {
+                message: PublicMessage.Updated
+            }
+        }
+        const result = await this.userModel.updateOne(
+            { _id: new Types.ObjectId(id) }, 
+            { new_mobile: newMobile }
+          );
+          const otp = await this.authService.generateOTP(newMobile);
+          await this.redisService.set(`mobile_token:${id}`, otp, 300);
+          return {
+              code: otp,
+          }
+    }
+    async verifyMobile(code: string) {
+        const {id, new_Mobile} = this.request.user;
+        const otpCode = await this.redisService.get(`mobile_token:${id}`);
+        if(!otpCode) throw new BadRequestException(AuthMessage.ExpiredCode);
+
+        const result = await this.userModel.updateOne({_id:  new Types.ObjectId(id)}, {
+            mobile:new_Mobile,
+            verify_email: true,
+            new_mobile: null
+        });
+        console.log(result);
+        return {
+            message: PublicMessage.Updated,
+        }
+
+    }
    
 }
