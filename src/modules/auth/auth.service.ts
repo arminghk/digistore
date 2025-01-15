@@ -37,8 +37,8 @@ export class AuthService {
   }
   async verifyOtp(verifyOtpDto: VerifyOtpDto) {
     let { mobile, code } = verifyOtpDto;
-
-    const storedCode = await this.redisService.get(mobile);
+    const key = `mobile:${mobile}`;
+    const storedCode = await this.redisService.get(key);
 
     if (!storedCode) {
       throw new UnauthorizedException('OTP code not found or expired');
@@ -69,7 +69,7 @@ export class AuthService {
     if (existingOtp) {
       throw new BadRequestException('OTP not expired');
     }
-
+   
     await this.redisService.set(key, code, expiresInSeconds);
     return code;
   }
