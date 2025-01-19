@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import { Types } from 'mongoose';
-import { User } from './user.schema'; // فرض می‌کنیم مدل User در این مسیر قرار دارد
+import { User } from './user.schema'; 
 
 export type ProfileDocument = HydratedDocument<Profile>;
 

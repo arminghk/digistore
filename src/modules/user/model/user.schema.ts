@@ -42,31 +42,26 @@ export class User {
   @Prop({ type: Types.ObjectId, ref: 'ProfileEntity', nullable: true })
   profile: ProfileDocument;
 
+  @Prop({ type: [Types.ObjectId], ref: 'Blog' })
+  blogs: Types.ObjectId[];
 
-  // @Prop({ type: [Types.ObjectId], ref: 'BlogEntity' })
-  // blogs: BlogEntity[];
+  @Prop({ type: [Types.ObjectId], ref: 'BlogLike' })
+  blog_likes: Types.ObjectId[];
 
-  // @Prop({ type: [Types.ObjectId], ref: 'BlogLikesEntity' })
-  // blog_likes: BlogLikesEntity[];
+  @Prop({ type: [Types.ObjectId], ref: 'BlogBookmark' })
+  blog_bookmarks: Types.ObjectId[];
 
+  @Prop({ type: [Types.ObjectId], ref: 'BlogComment' })
+  blog_comments: Types.ObjectId[];
 
-  // @Prop({ type: [Types.ObjectId], ref: 'BlogBookmarkEntity' })
-  // blog_bookmarks: BlogBookmarkEntity[];
+  @Prop({ type: [Types.ObjectId], ref: 'Image' })
+  images: Types.ObjectId[];
 
+  @Prop({ type: [Types.ObjectId], ref: 'Follow' })
+  followers: Types.ObjectId[];
 
-  // @Prop({ type: [Types.ObjectId], ref: 'BlogCommentEntity' })
-  // blog_comments: BlogCommentEntity[];
-
-
-  // @Prop({ type: [Types.ObjectId], ref: 'ImageEntity' })
-  // images: ImageEntity[];
-
-
-  // @Prop({ type: [Types.ObjectId], ref: 'FollowEntity' })
-  // followers: FollowEntity[];
-
-  // @Prop({ type: [Types.ObjectId], ref: 'FollowEntity' })
-  // following: FollowEntity[];
+  @Prop({ type: [Types.ObjectId], ref: 'Follow' })
+  following: Types.ObjectId[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

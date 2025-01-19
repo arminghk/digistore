@@ -5,6 +5,7 @@ import { MongooseConfigService } from './config/mongoDB.config';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CategoryModule } from './modules/category/category.module';
+import { BlogModule } from './modules/blog/blog.module';
 
 
 @Module({
@@ -15,7 +16,8 @@ import { CategoryModule } from './modules/category/category.module';
     CustomConfigModule,
     UserModule,
     AuthModule,
-    CategoryModule
+    CategoryModule,
+    BlogModule
   ],
   controllers: [],
   providers: [],
